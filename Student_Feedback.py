@@ -14,15 +14,29 @@ import markdown
 def convert_md_to_pdf(md_text):
     """
     Convert Markdown text to PDF using pdfkit.
-    This function converts the Markdown to HTML (with basic styling) and then to PDF.
+    The function converts the Markdown to HTML, embeds MathJax for rendering LaTeX,
+    and then converts that HTML to PDF. A JavaScript delay is specified to allow MathJax
+    to complete rendering.
     """
     # Convert Markdown to HTML
     html_text = markdown.markdown(md_text, extensions=['fenced_code'])
-    # Add basic CSS for styling
+    
+    # Create HTML with embedded MathJax scripts and basic CSS
     html_with_style = f"""
     <html>
     <head>
       <meta charset="utf-8">
+      <!-- MathJax configuration -->
+      <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({{
+          tex2jax: {{
+            inlineMath: [['$','$'], ['\\(','\\)']]
+          }},
+          messageStyle: 'none'
+        }});
+      </script>
+      <!-- Load MathJax -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML" type="text/javascript"></script>
       <style>
         body {{
             font-family: sans-serif;
@@ -31,12 +45,8 @@ def convert_md_to_pdf(md_text):
         h1, h2, h3, h4 {{
             color: #333;
         }}
-        p {{
+        p, li {{
             font-size: 12pt;
-        }}
-        li {{
-            font-size: 12pt;
-            margin-bottom: 0.5em;
         }}
       </style>
     </head>
@@ -45,8 +55,12 @@ def convert_md_to_pdf(md_text):
     </body>
     </html>
     """
-    # On Streamlit Cloud, wkhtmltopdf is installed via packages.txt and available in PATH.
-    pdf = pdfkit.from_string(html_with_style, False)
+    # Set options to allow JavaScript to run (delay in milliseconds)
+    options = {
+        'javascript-delay': '2000',  # Adjust delay as needed for MathJax rendering
+        'no-stop-slow-scripts': None
+    }
+    pdf = pdfkit.from_string(html_with_style, False, options=options)
     return pdf
 
 def load_student_answers(file):
