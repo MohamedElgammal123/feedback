@@ -55,9 +55,9 @@ def convert_md_to_pdf(md_text):
     </body>
     </html>
     """
-    # Set options to allow JavaScript to run (delay in milliseconds)
+    # Increase javascript-delay to allow MathJax time to render
     options = {
-        'javascript-delay': '5000',  # Adjust delay as needed for MathJax rendering
+        'javascript-delay': '5000',  # Delay in milliseconds; adjust if needed
         'no-stop-slow-scripts': None
     }
     pdf = pdfkit.from_string(html_with_style, False, options=options)
@@ -103,20 +103,23 @@ def get_feedback_for_choice(student_answer, feedback_entry):
     
     return student_choice, correct_choice, justification
 
-def generate_feedback_text(student_df, feedback_data):
+def generate_feedback_text(student_df, feedback_data, excel_filename):
     """
     Generate the feedback text output using the student answers and feedback data.
     The output is formatted in Markdown so that any LaTeX expressions (delimited by $)
     are rendered in the browser.
+    The Excel file name (passed as excel_filename) is included as a referral.
     """
     output = []
-    output.append("# Feedback Report\n")
+    output.append(f"# Feedback Report for {excel_filename}\n")
     
     # Process each student answer row
     for _, row in student_df.iterrows():
-        # Assume Excel "Question" column provides identifiers like "Q1", "Q2", etc.
         question_identifier = str(row['Question']).strip()
         student_answer = row['Answer']
+        
+        # Add a referral header line that includes the Excel file name and question identifier
+        output.append(f"### {excel_filename} | {question_identifier}\n")
         
         # Find matching feedback entry by searching for keys that start with the question identifier
         feedback_entry = None
@@ -124,8 +127,6 @@ def generate_feedback_text(student_df, feedback_data):
             if key.startswith(question_identifier):
                 feedback_entry = feedback_data[key]
                 break
-        
-        output.append(f"## {question_identifier}\n")
         
         if feedback_entry is None:
             output.append(f"**No feedback found for question {question_identifier}.**\n")
@@ -159,9 +160,11 @@ if st.button("Generate Feedback"):
             # Load files into appropriate data structures
             student_df = load_student_answers(excel_file)
             feedback_data = load_feedback(json_file)
+            # Get the Excel file name for referral in the feedback output
+            excel_filename = excel_file.name
             
-            # Generate formatted feedback output in Markdown
-            feedback_text = generate_feedback_text(student_df, feedback_data)
+            # Generate formatted feedback output in Markdown, including the Excel file name
+            feedback_text = generate_feedback_text(student_df, feedback_data, excel_filename)
             
             st.markdown("### **Feedback Output**")
             st.markdown(feedback_text, unsafe_allow_html=True)
