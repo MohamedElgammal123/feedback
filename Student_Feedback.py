@@ -57,7 +57,7 @@ def convert_md_to_pdf(md_text):
     """
     # Set options to allow JavaScript to run (delay in milliseconds)
     options = {
-        'javascript-delay': '2000',  # Adjust delay as needed for MathJax rendering
+        'javascript-delay': '3000',  # Adjust delay as needed for MathJax rendering
         'no-stop-slow-scripts': None
     }
     pdf = pdfkit.from_string(html_with_style, False, options=options)
