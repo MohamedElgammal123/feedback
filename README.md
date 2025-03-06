@@ -1,33 +1,30 @@
-# OpenSource Feedback Generator Framework for Scantron Exams
+# Student Feedback Generator
 
-An open-source framework designed to generate detailed feedback reports for scantron-based exams. This app allows educators to easily upload student answers and corresponding JSON feedback data, then automatically processes and outputs customized feedback for each exam question.
+An interactive, open-source tool that generates detailed feedback reports for scantron-based exams. This application allows educators to upload an Excel file with student answers and a JSON file containing feedback data (with LaTeX-formatted math expressions). The app then produces a Markdown report that is converted into a PDF, ensuring that the final output preserves rendered math expressions as seen in the app.
 
 ## Features
 
-- **Easy File Upload:**  
-  Upload student answers via an Excel file and corresponding feedback via a JSON file.
+- **File Upload:**  
+  Upload an Excel file with student answers (including the original file name as a referral) and a JSON file with feedback details.
   
-- **Automated Feedback Generation:**  
-  Automatically matches student answers with detailed justifications and provides correct answer information if a student's response is incorrect.
-  
-- **Downloadable Reports:**  
-  View the generated feedback in the web interface and download it as a TXT file.
-  
-- **Streamlit-Powered Interface:**  
-  Enjoy a modern, interactive interface built with Streamlit, making it simple for non-technical users to generate feedback reports.
+- **Feedback Generation:**  
+  Automatically maps each student answer to the corresponding feedback, refining the output with rendered LaTeX math expressions.
+
+- **PDF Conversion:**  
+  Generates a PDF from the Markdown report (with MathJax for proper math rendering) so that the final output matches the on-screen view.
 
 ## Technologies Used
 
-- [Streamlit](https://streamlit.io/) – for creating interactive web applications.
-- [Pandas](https://pandas.pydata.org/) – for data manipulation and reading Excel files.
-- [Openpyxl](https://openpyxl.readthedocs.io/en/stable/) – for Excel file support.
-- [JSON](https://www.json.org/) – for structured feedback data.
+- **[Streamlit](https://streamlit.io/):** For building the interactive web application.  
+- **[Pandas](https://pandas.pydata.org/):** For data manipulation and reading Excel files.  
+- **[openpyxl](https://openpyxl.readthedocs.io/en/stable/):** To support Excel file reading in Pandas.  
+- **[pdfkit](https://pypi.org/project/pdfkit/):** For converting HTML (generated from Markdown) to PDF.  
+- **[markdown](https://pypi.org/project/Markdown/):** For converting Markdown text to HTML.  
+- **wkhtmltopdf:** A system dependency installed via `packages.txt` (in Streamlit Cloud) that pdfkit uses to generate PDFs.
 
-## Getting Started
+## Installation
 
-### Prerequisites
-
-Ensure you have Python installed. It is recommended to use a virtual environment. Then, install the required packages:
-
-```bash
-pip install -r requirements.txt
+1. **Clone the Repository:**
+   ```bash
+   git clone https://github.com/<your-username>/student-feedback-generator.git
+   cd student-feedback-generator
